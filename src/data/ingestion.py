@@ -308,11 +308,13 @@ def generate_synthetic_data(n_samples: int = 20_000, random_state: int = 42) -> 
     )
 
     # === TARGET VARIABLE: Loan Status ===
-    # Probability of default increases with risk_score
+    # Probability of default increases with risk_score PLUS direct penalties
+    # for delinquencies and public records, so the model learns these matter.
     # Calibrated sigmoid: ~3% at risk=-2, ~15% at risk=0, ~50% at risk=+2
-    # This gives the model a STRONG discriminative signal to learn from.
-    # b=1.73 shifts the sigmoid so ~15% of average borrowers default.
-    default_prob = 1 / (1 + np.exp(-1.0 * risk_score + 1.73))
+    delinq_effect = np.minimum(delinq_2yrs * 0.5, 2.5)   # each delinquency adds ~0.5 risk; capped
+    pub_rec_effect = np.minimum(pub_rec * 0.7, 2.5)       # each public record adds ~0.7 risk; capped
+    adjusted_risk = risk_score + delinq_effect + pub_rec_effect
+    default_prob = 1 / (1 + np.exp(-1.0 * adjusted_risk + 1.73))
     default_prob = np.clip(default_prob, 0.01, 0.99)
 
     loan_status = np.where(
