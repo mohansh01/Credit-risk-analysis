@@ -139,11 +139,14 @@ with tab2:
             marker_color=bar_colors,
             text=[f"{r:.1%}" for r in approval],
             textposition="outside",
+            textfont=dict(color="#111827", size=12),
             hovertemplate="Grade %{x}<br>Approval Rate: %{y:.1%}<extra></extra>",
         ))
         fig_apr.update_layout(
-            xaxis=dict(title="Loan Grade  (A = Best → G = Worst)", gridcolor="#f3f4f6"),
-            yaxis=dict(title="Approval Rate", tickformat=".0%", range=[0, 1.12], gridcolor="#f3f4f6"),
+            xaxis=dict(title=dict(text="Loan Grade  (A = Best → G = Worst)", font=dict(color="#111827")),
+                       tickfont=dict(color="#111827"), gridcolor="#f3f4f6"),
+            yaxis=dict(title=dict(text="Approval Rate", font=dict(color="#111827")),
+                       tickfont=dict(color="#111827"), tickformat=".0%", range=[0, 1.12], gridcolor="#f3f4f6"),
             plot_bgcolor="white", paper_bgcolor="white",
             height=360, margin=dict(t=20, b=50, l=60, r=20),
             showlegend=False,
@@ -159,6 +162,7 @@ with tab2:
             marker_color=bar_colors,
             text=[f"{d:.2f}" for d in dir_vals],
             textposition="outside",
+            textfont=dict(color="#111827", size=12),
             hovertemplate="Grade %{x}<br>DIR: %{y:.2f}<extra></extra>",
         ))
         fig_dir.add_hline(
@@ -168,8 +172,10 @@ with tab2:
             annotation_font_color="#dc2626",
         )
         fig_dir.update_layout(
-            xaxis=dict(title="Loan Grade", gridcolor="#f3f4f6"),
-            yaxis=dict(title="Disparate Impact Ratio", range=[0, 1.22], gridcolor="#f3f4f6"),
+            xaxis=dict(title=dict(text="Loan Grade", font=dict(color="#111827")),
+                       tickfont=dict(color="#111827"), gridcolor="#f3f4f6"),
+            yaxis=dict(title=dict(text="Disparate Impact Ratio", font=dict(color="#111827")),
+                       tickfont=dict(color="#111827"), range=[0, 1.22], gridcolor="#f3f4f6"),
             plot_bgcolor="white", paper_bgcolor="white",
             height=360, margin=dict(t=20, b=50, l=60, r=20),
             showlegend=False,
@@ -280,6 +286,7 @@ with tab3:
             marker_color=bin_colors,
             text=[f"{v:.3f}" for v in psi_bins],
             textposition="outside",
+            textfont=dict(color="#111827", size=11),
             hovertemplate="Bin: %{x}<br>PSI: %{y:.4f}<extra></extra>",
         ))
         fig_psi.add_hline(
@@ -288,8 +295,10 @@ with tab3:
             annotation_font_color="#d97706",
         )
         fig_psi.update_layout(
-            xaxis=dict(title="Score Range", tickangle=45, gridcolor="#f3f4f6"),
-            yaxis=dict(title="PSI Contribution", gridcolor="#f3f4f6"),
+            xaxis=dict(title=dict(text="Score Range", font=dict(color="#111827")),
+                       tickfont=dict(color="#111827"), tickangle=45, gridcolor="#f3f4f6"),
+            yaxis=dict(title=dict(text="PSI Contribution", font=dict(color="#111827")),
+                       tickfont=dict(color="#111827"), gridcolor="#f3f4f6"),
             plot_bgcolor="white", paper_bgcolor="white",
             height=340, margin=dict(t=20, b=80, l=60, r=20),
             showlegend=False,
@@ -354,11 +363,11 @@ with tab4:
             bordercolor="#1a56db", font=dict(size=12),
         )
         fig_roc.update_layout(
-            xaxis=dict(title="False Positive Rate (Good borrowers wrongly rejected)",
-                       range=[0, 1], gridcolor="#f3f4f6"),
-            yaxis=dict(title="True Positive Rate (Bad borrowers correctly caught)",
-                       range=[0, 1], gridcolor="#f3f4f6"),
-            legend=dict(orientation="h", y=-0.18),
+            xaxis=dict(title=dict(text="False Positive Rate (Good borrowers wrongly rejected)", font=dict(color="#111827")),
+                       tickfont=dict(color="#111827"), range=[0, 1], gridcolor="#f3f4f6"),
+            yaxis=dict(title=dict(text="True Positive Rate (Bad borrowers correctly caught)", font=dict(color="#111827")),
+                       tickfont=dict(color="#111827"), range=[0, 1], gridcolor="#f3f4f6"),
+            legend=dict(orientation="h", y=-0.18, font=dict(color="#111827")),
             plot_bgcolor="white", paper_bgcolor="white",
             height=420, margin=dict(t=20, b=80, l=70, r=20),
         )
@@ -401,11 +410,11 @@ with tab4:
             bordercolor="#1a56db", font=dict(size=13, color="#1a56db"),
         )
         fig_ks.update_layout(
-            xaxis=dict(title="Population percentile (sorted by risk score, highest first)",
-                       tickformat=".0%", range=[0, 1], gridcolor="#f3f4f6"),
-            yaxis=dict(title="Cumulative percentage captured",
-                       tickformat=".0%", range=[0, 1], gridcolor="#f3f4f6"),
-            legend=dict(orientation="h", y=-0.18),
+            xaxis=dict(title=dict(text="Population percentile (sorted by risk score, highest first)", font=dict(color="#111827")),
+                       tickfont=dict(color="#111827"), tickformat=".0%", range=[0, 1], gridcolor="#f3f4f6"),
+            yaxis=dict(title=dict(text="Cumulative percentage captured", font=dict(color="#111827")),
+                       tickfont=dict(color="#111827"), tickformat=".0%", range=[0, 1], gridcolor="#f3f4f6"),
+            legend=dict(orientation="h", y=-0.18, font=dict(color="#111827")),
             plot_bgcolor="white", paper_bgcolor="white",
             height=420, margin=dict(t=20, b=80, l=70, r=20),
         )
