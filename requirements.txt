@@ -87,6 +87,11 @@ joblib==1.3.2
 #            (e.g., suddenly more high-risk applicants than usual).
 evidently==0.4.22
 
+# optuna: Bayesian hyperparameter tuning framework.
+#         Uses Tree-structured Parzen Estimator (TPE) to find the best
+#         model hyperparameters efficiently (smarter than random search).
+optuna==3.6.1
+
 # --- VISUALIZATION ---
 # matplotlib: Basic Python plotting library.
 matplotlib==3.8.4
