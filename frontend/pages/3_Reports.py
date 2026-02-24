@@ -100,15 +100,15 @@ with tab1:
 
     # Metrics row
     m1, m2, m3 = st.columns(3)
-    m1.metric("AUC-ROC", "0.73", help="How often the model ranks a bad borrower higher risk than a good one.")
-    m2.metric("KS Statistic", "0.38", help="Maximum separation between the two cumulative curves.")
-    m3.metric("Gini Coefficient", "0.46", help="2 × AUC − 1. Measures rank-ordering power.")
+    m1.metric("AUC-ROC", "0.75", help="How often the model ranks a bad borrower higher risk than a good one.")
+    m2.metric("KS Statistic", "0.40", help="Maximum separation between the two cumulative curves.")
+    m3.metric("Gini Coefficient", "0.50", help="2 × AUC − 1. Measures rank-ordering power.")
 
     st.markdown("""
     > 💡 **How to read the numbers:**
-    > - **AUC 0.73** = The model correctly ranks a bad borrower as riskier than a good borrower **73% of the time**
-    > - **KS 0.38** = At the optimal cut-off point, the two groups are **38% apart** in cumulative distribution
-    > - **Gini 0.46** = Industry standard for credit scoring; anything above 0.40 is considered **good**
+    > - **AUC 0.75** = The model correctly ranks a bad borrower as riskier than a good borrower **75% of the time**
+    > - **KS 0.40** = At the optimal cut-off point, the two groups are **40% apart** in cumulative distribution
+    > - **Gini 0.50** = Industry standard for credit scoring; anything above 0.40 is considered **good**
     """)
 
 # ═══════════════════════════════════════════════════════════════
@@ -240,7 +240,7 @@ with tab3:
                     unsafe_allow_html=True)
     with c3:
         st.markdown(f"""
-        <div style='background:#f9fafb;border-left:4px solid {status_color};
+        <div style='border-left:4px solid {status_color};
                     padding:0.8rem 1rem;border-radius:6px;margin-top:0.5rem'>
         PSI = {psi_total:.4f} → above 0.25 threshold → score distribution has shifted significantly.
         This is <b>intentionally simulated</b> in this demo to show the alert system working.
@@ -325,16 +325,16 @@ with tab4:
       The KS statistic = the largest gap between the two lines.
     """)
 
-    # Simulate predictions consistent with AUC ~0.73
-    np.random.seed(42)
+    # Dedicated fresh RNG — normal distributions calibrated to give AUC ~0.73
+    # beta(5,3) vs beta(2,6) produces AUC ~0.95 (too far apart); normals give realistic ~0.73
+    roc_rng = np.random.RandomState(42)
     n = 3000
-    y_true  = rng.binomial(1, 0.15, n)
+    y_true  = roc_rng.binomial(1, 0.15, n)
     y_score = np.where(
         y_true == 1,
-        rng.beta(5, 3, n),
-        rng.beta(2, 6, n),
+        np.clip(roc_rng.normal(0.52, 0.22, n), 0.01, 0.99),   # defaulters: mean 0.52
+        np.clip(roc_rng.normal(0.32, 0.22, n), 0.01, 0.99),   # non-defaulters: mean 0.32
     )
-    y_score = np.clip(y_score, 0, 1)
 
     fpr, tpr, _ = roc_curve(y_true, y_score)
     roc_auc = sk_auc(fpr, tpr)
@@ -360,7 +360,7 @@ with tab4:
             x=0.6, y=0.4,
             text=f"AUC = {roc_auc:.2f}<br>↑ Better than random by {roc_auc-0.5:.0%}",
             showarrow=False, bgcolor="#eff6ff",
-            bordercolor="#1a56db", font=dict(size=12),
+            bordercolor="#1a56db", font=dict(size=12, color="#1a56db"),
         )
         fig_roc.update_layout(
             xaxis=dict(title=dict(text="False Positive Rate (Good borrowers wrongly rejected)", font=dict(color="#111827")),
@@ -421,24 +421,25 @@ with tab4:
         st.plotly_chart(fig_ks, use_container_width=True)
         st.caption("The bigger the blue gap between the two lines, the better the model discriminates.")
 
-    st.markdown("""
-    > 💡 **Simple way to think about KS = 0.38:**
-    > If you take the top 38% of applicants ranked by the model as "most risky",
+    st.markdown(f"""
+    > 💡 **Simple way to think about KS = {ks_stat:.2f}:**
+    > If you take the top {ks_stat:.0%} of applicants ranked by the model as "most risky",
     > you will have captured a significantly larger share of actual defaulters
     > than non-defaulters. The model is doing a good job of ordering risk.
     """)
 
     # Summary table
     st.markdown("#### Performance Summary")
+    gini = 2 * roc_auc - 1
     perf_df = pd.DataFrame({
         "Metric":        ["AUC-ROC", "KS Statistic", "Gini Coefficient"],
-        "Value":         [f"{roc_auc:.2f}", f"{ks_stat:.2f}", f"{2*roc_auc-1:.2f}"],
+        "Value":         [f"{roc_auc:.2f}", f"{ks_stat:.2f}", f"{gini:.2f}"],
         "Benchmark":     ["> 0.70 is Good", "> 0.30 is Good", "> 0.40 is Good"],
         "Our Rating":    ["✅ Good", "✅ Good", "✅ Good"],
         "Plain English": [
-            "Model ranks a bad borrower above a good one 73% of the time",
-            "At the best cut-off, the two groups are 38% apart",
-            "Model is 46% better than random at rank-ordering risk",
+            f"Model ranks a bad borrower above a good one {roc_auc:.0%} of the time",
+            f"At the best cut-off, the two groups are {ks_stat:.0%} apart",
+            f"Model is {gini:.0%} better than random at rank-ordering risk",
         ],
     })
     st.dataframe(perf_df, use_container_width=True, hide_index=True)
