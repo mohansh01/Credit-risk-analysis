@@ -1,0 +1,17 @@
+{
+  "model": "XGBoost",
+  "best_auc": 0.7237897100834366,
+  "best_params": {
+    "max_depth": 3,
+    "min_child_weight": 18,
+    "gamma": 0.40168327951588484,
+    "subsample": 0.7424094503442709,
+    "colsample_bytree": 0.9107664207134123,
+    "reg_alpha": 4.618954501355023e-05,
+    "reg_lambda": 0.00010813411997922078,
+    "learning_rate": 0.02103614864354163,
+    "n_estimators": 129
+  },
+  "n_trials": 30,
+  "n_completed": 30
+}

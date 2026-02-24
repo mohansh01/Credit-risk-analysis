@@ -1,0 +1,126 @@
+# ============================================================
+# CREDIT RISK SCORING ENGINE - Dependencies
+# ============================================================
+# How to install: run `pip install -r requirements.txt`
+# This file lists every Python library this project needs.
+# Think of it like a shopping list for Python packages.
+# ============================================================
+
+# --- CORE DATA SCIENCE ---
+# pandas: The Excel of Python. We use it to load, clean, and
+#         manipulate tabular data (rows and columns of loan data).
+pandas==2.2.1
+
+# numpy: Fast math operations on arrays and matrices.
+#        Used internally by almost every ML library.
+numpy==1.26.4
+
+# scipy: Scientific computing - we use it for statistical tests
+#        like the Kolmogorov-Smirnov test (measures distribution shift).
+scipy==1.13.0
+
+# --- MACHINE LEARNING ---
+# scikit-learn: The Swiss Army knife of ML. Provides:
+#   - Data preprocessing (scaling, encoding)
+#   - Pipeline building (chain steps together)
+#   - Model stacking (combine multiple models)
+#   - Metrics (AUC, accuracy, etc.)
+scikit-learn==1.4.2
+
+# xgboost: Extreme Gradient Boosting. One of the best models
+#          for tabular (structured) data like loan applications.
+#          Won many Kaggle competitions. Handles missing values natively.
+xgboost==2.0.3
+
+# lightgbm: Light Gradient Boosting Machine by Microsoft.
+#           Faster than XGBoost, especially on large datasets.
+#           Uses "leaf-wise" tree growth (smarter than XGBoost's "level-wise").
+lightgbm==4.3.0
+
+# imbalanced-learn: Loan defaults are RARE (~5-10% of all loans).
+#                   This library provides SMOTE (Synthetic Minority Over-sampling)
+#                   to balance the dataset so the model learns from rare defaults.
+imbalanced-learn==0.12.2
+
+# --- EXPLAINABILITY ---
+# shap: SHapley Additive exPlanations. Explains WHY the model made a decision.
+#       Critical for regulatory compliance (banks must justify loan rejections).
+#       Named after Nobel Prize-winning game theory concept.
+shap==0.45.0
+
+# --- FAIRNESS & BIAS DETECTION ---
+# fairlearn: Microsoft's library to measure and fix unfair ML models.
+#            Ensures the model doesn't discriminate by gender, race, etc.
+fairlearn==0.10.0
+
+# --- REST API ---
+# fastapi: Modern, fast Python web framework for building APIs.
+#          An API lets other applications (like a bank's website) send
+#          an applicant's data and receive a credit score in response.
+fastapi==0.110.1
+
+# uvicorn: The web server that RUNS the FastAPI app.
+#          Think of it as the engine that FastAPI sits on top of.
+uvicorn==0.29.0
+
+# pydantic: Data validation library. Ensures API inputs are valid
+#           (e.g., loan amount must be a number, not text).
+pydantic==2.6.4
+
+# python-multipart: Required for FastAPI file upload support
+python-multipart==0.0.9
+
+# --- MODEL TRACKING & SERIALIZATION ---
+# mlflow: Tracks all your ML experiments. Records which model version
+#         got what AUC score, what hyperparameters were used, etc.
+#         Like a lab notebook for ML experiments.
+mlflow==2.11.3
+
+# joblib: Saves and loads trained ML models to/from disk.
+#         Once trained, we save the model as a .pkl file so we
+#         don't have to retrain every time the API starts.
+joblib==1.3.2
+
+# --- MONITORING & DRIFT DETECTION ---
+# evidently: ML monitoring library. Generates beautiful HTML reports
+#            showing if your model's input data distribution has shifted
+#            (e.g., suddenly more high-risk applicants than usual).
+evidently==0.4.22
+
+# --- VISUALIZATION ---
+# matplotlib: Basic Python plotting library.
+matplotlib==3.8.4
+
+# seaborn: Beautiful statistical visualizations built on matplotlib.
+seaborn==0.13.2
+
+# plotly: Interactive charts (zoom, hover, etc.) for dashboards.
+plotly==5.20.0
+
+# --- UTILITIES ---
+# python-dotenv: Loads secret configuration (API keys, database passwords)
+#                from a .env file so they're not hardcoded in the code.
+python-dotenv==1.0.1
+
+# loguru: Better logging than Python's built-in logging module.
+#         Logs tell you what the system is doing, making debugging easier.
+loguru==0.7.2
+
+# --- TESTING ---
+# pytest: Python's most popular testing framework.
+#         Tests verify that your code works correctly.
+pytest==8.1.1
+
+# httpx: HTTP client used to test the FastAPI endpoints.
+httpx==0.27.0
+
+# --- JUPYTER NOTEBOOKS ---
+# jupyter: Interactive notebooks where you can write and run code
+#          cell by cell, with visualizations inline. Great for exploration.
+jupyter==1.0.0
+ipykernel==6.29.3
+
+# --- FRONTEND ---
+# streamlit: Interactive web app framework.
+#            Used for the professional frontend dashboard.
+streamlit==1.35.0

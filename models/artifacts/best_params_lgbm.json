@@ -1,0 +1,19 @@
+{
+  "model": "LightGBM",
+  "best_auc": 0.7227386611979082,
+  "best_params": {
+    "num_leaves": 62,
+    "max_depth": 4,
+    "min_child_samples": 83,
+    "subsample": 0.7966904691676537,
+    "subsample_freq": 2,
+    "colsample_bytree": 0.7979845986978307,
+    "reg_alpha": 0.0537251054516561,
+    "reg_lambda": 0.00014184507849035905,
+    "min_split_gain": 0.4926038737851366,
+    "learning_rate": 0.020112909751883994,
+    "n_estimators": 80
+  },
+  "n_trials": 30,
+  "n_completed": 30
+}

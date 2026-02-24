@@ -1,0 +1,43 @@
+## render.yaml — Render Deployment Configuration
+## ==============================================
+## Deploys the Credit Risk Scoring Engine as a Streamlit web app.
+##
+## Setup steps on Render:
+##   1. Connect your GitHub repo on https://render.com
+##   2. Render auto-detects this file and configures the service
+##   3. Click "Create Web Service" — done!
+##
+## The build phase trains the ML model automatically.
+## The start command launches the Streamlit frontend.
+
+services:
+  - type: web
+    name: credit-risk-engine
+    runtime: python
+    plan: free          # upgrade to "starter" for persistent disk
+
+    ## Install dependencies + train model during build
+    buildCommand: >
+      pip install -r requirements.txt &&
+      python run.py --mode train
+
+    ## Launch Streamlit on Render's dynamic port
+    startCommand: >
+      streamlit run frontend/app.py
+      --server.port $PORT
+      --server.address 0.0.0.0
+      --server.headless true
+      --browser.gatherUsageStats false
+
+    ## Environment variables
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.10.13"
+      - key: PORT
+        value: "10000"     # Render overrides this automatically
+
+    ## Health check — Render pings this to verify app is alive
+    healthCheckPath: /
+
+    ## Auto-deploy on every push to main branch
+    autoDeploy: true

@@ -1,0 +1,47 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Model artifacts (trained on Render — no need to upload large .pkl files)
+models/artifacts/*.pkl
+models/artifacts/*.joblib
+models/mlruns/
+
+# Data (synthetic data is regenerated on run — no need to upload)
+data/raw/
+data/processed/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+logs/
+
+# Reports (regenerated on run)
+reports/*.html
+reports/*.json
+
+# Pytest cache
+.pytest_cache/
