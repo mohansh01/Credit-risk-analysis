@@ -195,14 +195,16 @@ def parse_string_columns(df: pd.DataFrame) -> pd.DataFrame:
 
     # --- Employment length: "10+ years" → 10, "< 1 year" → 0 ---
     if "emp_length" in df.columns:
-        emp_map = {
-            "< 1 year": 0,
-            "1 year": 1, "2 years": 2, "3 years": 3,
-            "4 years": 4, "5 years": 5, "6 years": 6,
-            "7 years": 7, "8 years": 8, "9 years": 9,
-            "10+ years": 10,
-        }
-        df["emp_length"] = df["emp_length"].map(emp_map)
+        # Guard: if already numeric (pipeline called twice), skip mapping
+        if df["emp_length"].dtype == object:
+            emp_map = {
+                "< 1 year": 0,
+                "1 year": 1, "2 years": 2, "3 years": 3,
+                "4 years": 4, "5 years": 5, "6 years": 6,
+                "7 years": 7, "8 years": 8, "9 years": 9,
+                "10+ years": 10,
+            }
+            df["emp_length"] = df["emp_length"].map(emp_map)
         # NaN = employment length not provided → impute with median later
 
     logger.info("String columns parsed successfully.")
