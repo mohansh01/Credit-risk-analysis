@@ -24,12 +24,20 @@ with st.sidebar:
     st.caption("Fill the form and click **Score Application** to get an instant credit decision.")
     st.markdown("---")
     st.markdown("""
-    **Required fields:**
-    - Loan amount & interest rate
-    - Annual income & DTI
-    - FICO score range
+    **Most impactful features** (in order):
+    1. 📈 **Interest Rate** — strongest signal
+    2. 📊 **FICO Score** — credit history summary
+    3. 💳 **Debt-to-Income (DTI)** — affordability
+    4. ⚠️ **Delinquencies** — payment history
+    5. 🔄 **Revolving Utilization** — credit usage
 
-    All other fields default to typical values if left blank.
+    **Decision threshold: 50%**
+    - Prob < 50% → APPROVE
+    - Prob ≥ 50% → REJECT
+
+    Use the **Borderline** preset to see
+    how changing individual fields flips
+    the decision.
     """)
 
 model_ready = model_status_sidebar()
@@ -53,13 +61,13 @@ PRESETS = {
         emp="10+ years",
     ),
     "medium": dict(
-        loan_amnt=15000.0, annual_inc=55000.0, dti=22.0, int_rate=14.49,
-        installment=520.0, fico_low=670, fico_high=674,
-        term="36 months", grade="C", home="RENT",
-        purpose="credit_card", verification="Not Verified",
-        delinq=1.0, open_acc=8.0, pub_rec=0.0,
-        revol_bal=12000.0, revol_util=55.0, total_acc=14.0, inq=2.0,
-        emp="3 years",
+        loan_amnt=20000.0, annual_inc=52000.0, dti=27.0, int_rate=14.5,
+        installment=580.0, fico_low=635, fico_high=639,
+        term="60 months", grade="C", home="RENT",
+        purpose="debt_consolidation", verification="Not Verified",
+        delinq=0.0, open_acc=7.0, pub_rec=0.0,
+        revol_bal=15000.0, revol_util=58.0, total_acc=11.0, inq=2.0,
+        emp="2 years",
     ),
     "risky": dict(
         loan_amnt=30000.0, annual_inc=28000.0, dti=45.0, int_rate=28.0,
@@ -83,13 +91,13 @@ st.markdown("#### ⚡ Quick-fill Presets")
 q1, q2, q3 = st.columns(3)
 
 with q1:
-    btn_safe = st.button("✅ Safe Borrower — Grade A", use_container_width=True,
+    btn_safe = st.button("✅ Safe — FICO 760, Int Rate 7.5%", use_container_width=True,
                          type="primary" if st.session_state.active_preset == "safe" else "secondary")
 with q2:
-    btn_med  = st.button("⚠️ Medium Risk — Grade C",  use_container_width=True,
+    btn_med  = st.button("⚠️ Borderline — FICO 637, Int Rate 14.5%", use_container_width=True,
                          type="primary" if st.session_state.active_preset == "medium" else "secondary")
 with q3:
-    btn_risk = st.button("❌ Risky Borrower — Grade G", use_container_width=True,
+    btn_risk = st.button("❌ High Risk — FICO 597, Int Rate 28%", use_container_width=True,
                          type="primary" if st.session_state.active_preset == "risky" else "secondary")
 
 # Update session state on button click and immediately rerun so form
@@ -106,8 +114,26 @@ if btn_risk:
 
 p = PRESETS[st.session_state.active_preset]
 
-st.caption(f"Currently loaded: **{st.session_state.active_preset.upper()}** preset. "
-           "Edit values freely, then click Score Application.")
+# ── Feature importance note ───────────────────────────────────────────────
+PRESET_TIPS = {
+    "safe": (
+        "✅ **Safe borrower loaded.** Low interest rate (7.5%) + FICO 760 + low DTI (8%) "
+        "→ model gives ~5–12% default probability. This will always APPROVE. "
+        "To see the model respond, try the **Borderline** preset instead."
+    ),
+    "medium": (
+        "⚠️ **Borderline case loaded.** This sits right at the decision boundary (~44% default prob → APPROVE). "
+        "Try: raise **Delinquencies** to 2+ or **Public Records** to 1 → flips to REJECT. "
+        "Or lower **FICO** below 620 / raise **DTI** above 35 → also flips to REJECT."
+    ),
+    "risky": (
+        "❌ **High-risk borrower loaded.** High interest rate (28%) + FICO 597 + DTI 45% "
+        "→ model gives ~85–95% default probability. This will always REJECT. "
+        "To see the model respond, try the **Borderline** preset instead."
+    ),
+}
+st.info(PRESET_TIPS[st.session_state.active_preset])
+st.caption("Most impactful features: **Interest Rate → FICO Score → DTI → Delinquencies → Revol. Utilization**")
 st.markdown("---")
 
 # ── Input form ────────────────────────────────────────────────────────────
