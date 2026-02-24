@@ -308,12 +308,14 @@ def generate_synthetic_data(n_samples: int = 20_000, random_state: int = 42) -> 
     )
 
     # === TARGET VARIABLE: Loan Status ===
-    # Probability of default increases with risk_score PLUS direct penalties
-    # for delinquencies and public records, so the model learns these matter.
-    # Calibrated sigmoid: ~3% at risk=-2, ~15% at risk=0, ~50% at risk=+2
-    delinq_effect = np.minimum(delinq_2yrs * 0.5, 2.5)   # each delinquency adds ~0.5 risk; capped
-    pub_rec_effect = np.minimum(pub_rec * 0.7, 2.5)       # each public record adds ~0.7 risk; capped
-    adjusted_risk = risk_score + delinq_effect + pub_rec_effect
+    # Probability of default = risk_score + delinquency penalties + irreducible noise.
+    # The irreducible noise (std=1.2) simulates real-world uncertainty — not every
+    # high-risk borrower defaults, not every low-risk one repays. This keeps
+    # AUC bounded to ~0.73-0.78 on any platform/Python version.
+    delinq_effect = np.minimum(delinq_2yrs * 0.3, 1.5)   # each delinquency adds ~0.3 risk
+    pub_rec_effect = np.minimum(pub_rec * 0.4, 1.5)       # each public record adds ~0.4 risk
+    irreducible_noise = rng.normal(0, 1.2, n_samples)     # caps achievable AUC ~0.73-0.78
+    adjusted_risk = risk_score + delinq_effect + pub_rec_effect + irreducible_noise
     default_prob = 1 / (1 + np.exp(-1.0 * adjusted_risk + 1.73))
     default_prob = np.clip(default_prob, 0.01, 0.99)
 
