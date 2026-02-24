@@ -72,9 +72,9 @@ st.subheader("📊 Model Performance")
 
 m1, m2, m3, m4 = st.columns(4)
 metrics = [
-    ("AUC-ROC",         "0.73",  "0.52 baseline",  "#1a56db"),
-    ("KS Statistic",    "0.38",  "Good separation", "#059669"),
-    ("Gini Coeff.",     "0.46",  "2×AUC − 1",      "#7c3aed"),
+    ("AUC-ROC",         "0.75",  "0.52 baseline",  "#1a56db"),
+    ("KS Statistic",    "0.40",  "Good separation", "#059669"),
+    ("Gini Coeff.",     "0.50",  "2×AUC − 1",      "#7c3aed"),
     ("Default Rate",    "~15%",  "Training data",   "#d97706"),
 ]
 for col, (label, val, sub, color) in zip([m1, m2, m3, m4], metrics):
@@ -140,7 +140,7 @@ with col2:
             fillcolor=color, line_color="#6b7280", line_width=1,
         )
         fig_arch.add_annotation(x=x, y=y, text=text, showarrow=False,
-                                font=dict(size=10), align="center")
+                                font=dict(size=10, color="#111827"), align="center")
 
     # Arrows
     arrows = [
@@ -164,6 +164,7 @@ with col2:
         xaxis=dict(range=[0, 1], showgrid=False, showticklabels=False, zeroline=False),
         yaxis=dict(range=[0, 1], showgrid=False, showticklabels=False, zeroline=False),
         plot_bgcolor="white", paper_bgcolor="white",
+        font=dict(color="#111827"),
     )
     st.plotly_chart(fig_arch, use_container_width=True)
 
