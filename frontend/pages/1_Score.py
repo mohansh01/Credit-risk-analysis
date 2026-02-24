@@ -265,24 +265,10 @@ if submitted:
         else:
             st.info("Risk factor details not available for this prediction.")
 
-        st.markdown("<br>", unsafe_allow_html=True)
-        m1, m2, m3 = st.columns(3)
-        m1.metric("Probability", f"{prob:.1%}")
-        m2.metric("Risk Grade",  grade_out)
-        m3.metric("Decision",    dec)
-
-        grade_explanations = {
-            "A": "Excellent borrower. Very low default risk.",
-            "B": "Good borrower. Low default risk.",
-            "C": "Average borrower. Moderate risk.",
-            "D": "Below average. Elevated risk.",
-            "F": "High risk. Significant default probability.",
-        }
-        exp = grade_explanations.get(grade_out, "Risk assessment complete.")
         st.markdown(f"""
         <div class="info-box">
-            <b>Grade {grade_out}:</b> {exp}<br>
-            Threshold is <b>50%</b>. This applicant's predicted default probability is <b>{prob:.1%}</b>.
+            Decision threshold: <b>50%</b> — predicted default probability is <b>{prob:.1%}</b>.
+            {"Above threshold → REJECT" if prob >= 0.50 else "Below threshold → APPROVE"}.
         </div>
         """, unsafe_allow_html=True)
 
