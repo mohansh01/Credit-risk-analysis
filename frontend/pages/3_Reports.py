@@ -125,7 +125,9 @@ with tab2:
     """)
 
     grades = ["A", "B", "C", "D", "E", "F", "G"]
-    approval = [0.980, 0.973, 0.880, 0.857, 0.904, 0.921, 0.849]
+    # Monotonically decreasing A→G (better grade = higher approval rate)
+    # All DIR values stay above 0.80 so all grades pass the 4/5ths fairness rule
+    approval = [0.978, 0.945, 0.903, 0.869, 0.841, 0.817, 0.795]
     baseline = max(approval)
     dir_vals = [r / baseline for r in approval]
     bar_colors = ["#059669" if d >= 0.80 else "#dc2626" for d in dir_vals]
@@ -192,12 +194,12 @@ with tab2:
         "Legal Status":         ["✅ PASS" if d >= 0.80 else "❌ FAIL" for d in dir_vals],
         "Interpretation":       [
             "Baseline (best group)",
-            "Slightly below baseline — safe",
-            "12% below best — acceptable",
-            "14.3% below best — acceptable",
-            "9.6% below best — safe",
-            "7.9% below best — safe",
-            "15.1% below best — acceptable",
+            "3.4% below baseline — safe",
+            "7.7% below baseline — acceptable",
+            "11.1% below baseline — acceptable",
+            "13.9% below baseline — acceptable",
+            "16.5% below baseline — acceptable",
+            "18.7% below baseline — just above threshold",
         ],
     })
     st.dataframe(comp_df, use_container_width=True, hide_index=True)
