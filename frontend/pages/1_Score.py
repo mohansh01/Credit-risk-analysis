@@ -53,7 +53,7 @@ if not model_ready:
 PRESETS = {
     "safe": dict(
         loan_amnt=8000.0, annual_inc=90000.0, dti=8.0, int_rate=7.5,
-        installment=250.0, fico_low=760, fico_high=764,
+        fico_low=760, fico_high=764,
         term="36 months", grade="A", home="MORTGAGE",
         purpose="debt_consolidation", verification="Verified",
         delinq=0.0, open_acc=10.0, pub_rec=0.0,
@@ -62,7 +62,7 @@ PRESETS = {
     ),
     "medium": dict(
         loan_amnt=20000.0, annual_inc=52000.0, dti=27.0, int_rate=14.5,
-        installment=580.0, fico_low=635, fico_high=639,
+        fico_low=635, fico_high=639,
         term="60 months", grade="C", home="RENT",
         purpose="debt_consolidation", verification="Not Verified",
         delinq=0.0, open_acc=7.0, pub_rec=0.0,
@@ -71,7 +71,7 @@ PRESETS = {
     ),
     "risky": dict(
         loan_amnt=30000.0, annual_inc=28000.0, dti=45.0, int_rate=28.0,
-        installment=1100.0, fico_low=595, fico_high=599,
+        fico_low=595, fico_high=599,
         term="60 months", grade="G", home="RENT",
         purpose="small_business", verification="Not Verified",
         delinq=5.0, open_acc=3.0, pub_rec=2.0,
@@ -144,12 +144,20 @@ with st.form("scoring_form"):
 
     with c1:
         st.markdown("**💰 Loan Details**")
-        loan_amnt   = st.number_input("Loan Amount ($)",     500,   40000, int(p["loan_amnt"]),   step=500)
-        int_rate    = st.number_input("Interest Rate (%)",   1.0,   35.0,  float(p["int_rate"]),  step=0.01, format="%.2f")
-        installment = st.number_input("Monthly Install. ($)",10.0, 5000.0, float(p["installment"]),step=10.0)
-        term        = st.selectbox("Loan Term",
-                                   ["36 months", "60 months"],
-                                   index=0 if p["term"] == "36 months" else 1)
+        loan_amnt = st.number_input("Loan Amount ($)",   500,  40000, int(p["loan_amnt"]),  step=500)
+        int_rate  = st.number_input("Interest Rate (%)", 1.0,  35.0,  float(p["int_rate"]), step=0.01, format="%.2f")
+        term      = st.selectbox("Loan Term",
+                                 ["36 months", "60 months"],
+                                 index=0 if p["term"] == "36 months" else 1)
+        # Auto-calculate monthly installment (amortizing loan formula)
+        _n = 36 if term == "36 months" else 60
+        _r = int_rate / 100 / 12
+        if _r > 0:
+            installment = round(loan_amnt * _r * (1 + _r)**_n / ((1 + _r)**_n - 1), 2)
+        else:
+            installment = round(loan_amnt / _n, 2)
+        st.metric("Monthly Installment (auto)", f"${installment:,.0f}",
+                  help="Calculated from Loan Amount × Interest Rate × Term. Updates after submit.")
 
     with c2:
         st.markdown("**🏠 Borrower Profile**")
